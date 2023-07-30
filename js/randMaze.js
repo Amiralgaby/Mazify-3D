@@ -98,14 +98,12 @@ function fusionRandomGeneration() {
 		let indexesMursJuxtapose = getIndexesMursJuxtapose(index);
 		return indexesMursJuxtapose.filter(indexVoisin => nbVoisinVide(indexVoisin) < 2);
 	}
-	
-	var nbPasse = 0;
-	
-	const indexCaseVideDeDepart = 20;// randomIndexInArray(initialArr);
+		
+	const indexCaseVideDeDepart = randomIndexInArray(initialArr);
 	
 	arrIndexsRestantPossibleDeRendreVide.push(indexCaseVideDeDepart);
 	
-	while (arrIndexsRestantPossibleDeRendreVide.length != 0 && nbPasse < 10_000) {
+	while (arrIndexsRestantPossibleDeRendreVide.length != 0) {
 		// on choisi un index random dans l'array d'index encore disponible
 		let indexArrayRandom = randomIndexInArray(arrIndexsRestantPossibleDeRendreVide);
 		let indexCase = arrIndexsRestantPossibleDeRendreVide[indexArrayRandom];
@@ -121,32 +119,14 @@ function fusionRandomGeneration() {
 		// on les rajoute à arrIndexsRestantPossibleDeRendreVide
 		let indexesCasesMursQuiPeuventDevenirVides = getIndexesCasesMursQuiPeuventDevenirVides(indexCase);
 		
-		//console.log(indexesCasesMursQuiPeuventDevenirVides);
-		
 		arrIndexsRestantPossibleDeRendreVide = arrIndexsRestantPossibleDeRendreVide.concat(indexesCasesMursQuiPeuventDevenirVides);
-		
-		//console.log("Avant filtre", arrIndexsRestantPossibleDeRendreVide)
 		
 		// on doit enlever les murs qui ont plus de 2 voisins vides
 		arrIndexsRestantPossibleDeRendreVide = arrIndexsRestantPossibleDeRendreVide.filter((val, index) => nbVoisinVide(val) < 2);
-		
-		//console.log("Après filtre", arrIndexsRestantPossibleDeRendreVide);
-		
-		// on doit enlever au array les cases qui sont des murs
-		//indexesDesMursJuxtaposeCaseVide = getIndexesMursJuxtaposeAvecPlusDeDeuxVoisinsVides(indexCase);
-		
-		//if (indexesDesMursJuxtaposeCaseVide.length) {
-			// pour cela on enlève de arrIndexsRestantPossibleDeRendreVide les indexs des cases qui sont des murs définitifs
-			//arrIndexsRestantPossibleDeRendreVide = arrIndexsRestantPossibleDeRendreVide.filter(val => !indexesDesMursJuxtaposeCaseVide.includes(val));
-		//}
-		
-		nbPasse++;
 	}
 	
 	initialArr[indexCaseVideDeDepart] = 's';
-	
-	console.log('nbPasse : ' + nbPasse);
-	
+		
 	// fermer le labyrinthe
 	// close the maze
 	for (let k = 0; k < 18; ++k) {
