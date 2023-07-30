@@ -60,7 +60,7 @@ function fusionRandomGeneration() {
 	// array avec les indexs de chaque case comme valeur
 	// index == value
 	let arrIndexsRestantPossibleDeRendreVide = [];
-	for (let i = 0; i < 18 * 18; i++) { arrIndexsRestantPossibleDeRendreVide.push(i); }
+	// for (let i = 0; i < 18 * 18; i++) { arrIndexsRestantPossibleDeRendreVide.push(i); }
 	
 	function getArrVoisinDindex(index) {
 		let arrVoisin = [];
@@ -90,13 +90,24 @@ function fusionRandomGeneration() {
 		return indexesVoisinsMurs.filter(indexVoisin => nbVoisinVide(indexVoisin) > 2);
 	}
 	
-	console.log('passe here');
+	function randomIndexInArray(anArr) {
+		return Math.floor(Math.random() * anArr.length);
+	}
+	
+	function getIndexesCasesMursQuiPeuventDevenirVides(index) {
+		let indexesMursJuxtapose = getIndexesMursJuxtapose(index);
+		return indexesMursJuxtapose.filter(indexVoisin => nbVoisinVide(indexVoisin) < 2);
+	}
 	
 	var nbPasse = 0;
 	
+	const indexCaseVideDeDepart = 20;// randomIndexInArray(initialArr);
+	
+	arrIndexsRestantPossibleDeRendreVide.push(indexCaseVideDeDepart);
+	
 	while (arrIndexsRestantPossibleDeRendreVide.length != 0 && nbPasse < 10_000) {
 		// on choisi un index random dans l'array d'index encore disponible
-		let indexArrayRandom = Math.floor(Math.random() * arrIndexsRestantPossibleDeRendreVide.length);
+		let indexArrayRandom = randomIndexInArray(arrIndexsRestantPossibleDeRendreVide);
 		let indexCase = arrIndexsRestantPossibleDeRendreVide[indexArrayRandom];
 		
 		// on rend vide la case 
@@ -105,16 +116,34 @@ function fusionRandomGeneration() {
 		// on enlève la case qui vient d'etre vidée de l'array d'indexs possibles
 		arrIndexsRestantPossibleDeRendreVide.splice(indexArrayRandom, 1);
 		
-		// on doit enlever au array les cases qui sont des murs
-		indexesDesMursJuxtaposeCaseVide = getIndexesMursJuxtaposeAvecPlusDeDeuxVoisinsVides(indexCase);
+		// on doit ajouter les indexs des cases qui sont des murs ET qui peuvent devenir
+		// des cases vides
+		// on les rajoute à arrIndexsRestantPossibleDeRendreVide
+		let indexesCasesMursQuiPeuventDevenirVides = getIndexesCasesMursQuiPeuventDevenirVides(indexCase);
 		
-		if (indexesDesMursJuxtaposeCaseVide.length) {
+		//console.log(indexesCasesMursQuiPeuventDevenirVides);
+		
+		arrIndexsRestantPossibleDeRendreVide = arrIndexsRestantPossibleDeRendreVide.concat(indexesCasesMursQuiPeuventDevenirVides);
+		
+		//console.log("Avant filtre", arrIndexsRestantPossibleDeRendreVide)
+		
+		// on doit enlever les murs qui ont plus de 2 voisins vides
+		arrIndexsRestantPossibleDeRendreVide = arrIndexsRestantPossibleDeRendreVide.filter((val, index) => nbVoisinVide(val) < 2);
+		
+		//console.log("Après filtre", arrIndexsRestantPossibleDeRendreVide);
+		
+		// on doit enlever au array les cases qui sont des murs
+		//indexesDesMursJuxtaposeCaseVide = getIndexesMursJuxtaposeAvecPlusDeDeuxVoisinsVides(indexCase);
+		
+		//if (indexesDesMursJuxtaposeCaseVide.length) {
 			// pour cela on enlève de arrIndexsRestantPossibleDeRendreVide les indexs des cases qui sont des murs définitifs
-			arrIndexsRestantPossibleDeRendreVide = arrIndexsRestantPossibleDeRendreVide.filter(val => !indexesDesMursJuxtaposeCaseVide.includes(val));
-		}
+			//arrIndexsRestantPossibleDeRendreVide = arrIndexsRestantPossibleDeRendreVide.filter(val => !indexesDesMursJuxtaposeCaseVide.includes(val));
+		//}
 		
 		nbPasse++;
 	}
+	
+	initialArr[indexCaseVideDeDepart] = 's';
 	
 	console.log('nbPasse : ' + nbPasse);
 	
