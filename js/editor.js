@@ -125,6 +125,10 @@ var app = new Vue({
         level12() {
 			let data = randomGeneration();
 			this.load(data,20,20);
-		}
+		},
+        fusionRandomMaze() {
+            let data = fusionRandomGeneration();
+            this.load(data, 20, 20);
+        }
     }
 })
